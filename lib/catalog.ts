@@ -10,9 +10,13 @@ export const sampleProducts: Product[] = [
 export const money = (amount: number) => new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN", maximumFractionDigits: 0 }).format(amount);
 export async function getProducts(): Promise<Product[]> {
   if (!process.env.API_BASE_URL) return sampleProducts;
-  const response = await fetch(`${process.env.API_BASE_URL.replace(/\/$/, "")}/products`, { cache: "no-store", signal: AbortSignal.timeout(8000) });
+  const products: Product[] = [];
+  for (let offset = 0; ; offset += 100) {
+  const response = await fetch(`${process.env.API_BASE_URL.replace(/\/$/, "")}/products?limit=100&offset=${offset}`, { cache: "no-store", signal: AbortSignal.timeout(8000) });
   if (!response.ok) throw new Error("The collection is temporarily unavailable.");
   const data = await response.json();
   if (!Array.isArray(data) || !data.every((p) => typeof p.id === "string" && typeof p.name === "string" && typeof p.category === "string" && typeof p.price === "number" && p.price >= 0 && typeof p.image === "string" && typeof p.color === "string" && typeof p.description === "string" && Array.isArray(p.sizes) && p.sizes.every((s: unknown) => typeof s === "string"))) throw new Error("Invalid catalogue response");
-  return data;
+  products.push(...data);
+  if (data.length < 100) return products;
+  }
 }
