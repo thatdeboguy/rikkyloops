@@ -34,3 +34,7 @@ Run `npm run lint` and `npm run build`. Production uses `npm start`.
 The public store still has a preview bag and does not collect payments or place orders. Contact form delivery is pending the backend messaging/email implementation. Review the size chart, returns text, and illustrative imagery before opening orders.
 
 Design references: https://www.crochellaa.ng/, https://lazoet.com/, and https://crochetcraftvilla.com/. Their text and photos are not reused; the supplied sample imagery is AI generated.
+
+## Display currencies
+
+Enter independent NGN, USD and TRY prices in the admin product editor. NGN is required; blank USD or TRY prices are shown as unavailable in that currency. No conversion or exchange-rate environment variables are needed. The header selection persists in a cookie and applies to cards, details, bag totals and shop price sorting. Existing products keep their NGN prices; edit each to add other currencies. Deploy the backend migration 003-product-currencies.sql before the updated backend and frontend.
