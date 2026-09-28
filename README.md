@@ -21,7 +21,7 @@ Visit `/admin` and sign in with an account provisioned using the backend's `admi
 
 JWTs are stored in HttpOnly, SameSite=Strict cookies, Secure in production. All admin browser requests pass through a same-origin Next.js route that checks the Origin on mutations and forwards the cookie token to Express. The backend authorizes every write; hiding the page alone is not the security boundary. Sessions expire after two hours. Logout and password changes revoke sessions in the database. The static ADMIN_API_KEY is no longer used.
 
-Website edits are fetched without caching and appear on new page loads after saving. Content uses plain text; line breaks are supported, HTML is not. Uploading an image stores it immediately; press Save product/Save website changes to attach its URL to the content. Deleting a product leaves its media in R2 to avoid breaking shared references.
+Website edits are fetched without caching and appear on new page loads after saving. Content uses plain text; line breaks are supported, HTML is not. Uploading an image stores it immediately; press Save product/Save website changes to attach its URL to the content. Replacing or deleting an image removes its R2 upload when no other product or website content uses it. Unsaved uploads expire after 24 hours and are removed by the backend cleanup worker.
 
 For manual image URLs, use the configured R2 public hostname (or extend `next.config.ts` to trust another image host). The bucket's public URL must be enabled and point to the same bucket used for uploads.
 
