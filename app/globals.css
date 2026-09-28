@@ -21,5 +21,11 @@
 
 /* Shared storefront type sizes on desktop and mobile. */
 .storefront p:not(.price),.storefront .footer-bottom{font-size:12px}
-.storefront a:not(.brand):not(.category-card):not(.product-image),.storefront .product-cta{font-size:8px}
+.storefront a:not(.brand):not(.category-card):not(.product-image),
+.storefront a.button,
+.storefront a.text-link,
+.storefront .section-heading a.text-link,
+.storefront .product-cta{font-size:8px}
 .storefront .eyebrow{font-size:10px}
+.storefront footer,.storefront footer h3,.storefront footer p:not(.price),.storefront footer .footer-bottom{font-size:12px}
+.storefront footer a:not(.brand){font-size:8px}
