@@ -1,4 +1,6 @@
 "use client";
+import { BrandLogo } from "@/components/brand-logo";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createContext, useContext, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
@@ -23,7 +25,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 export function Icon({ name }: { name: "bag" | "search" | "menu" }) { return <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">{name === "bag" ? <><path d="M5 7h14l1 14H4L5 7Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></> : name === "search" ? <><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></> : <path d="M3 6h18M3 12h18M3 18h18"/>}</svg>; }
 export function Header({ announcement }: { announcement?: string }) {
   const path = usePathname(); const [open, setOpen] = useState(false);
-  return <><div className="announcement">{announcement}</div><header className="header"><Link href="/" className="brand" aria-label="Rikkyloops home">rikkyloops<span>HANDMADE, JUST FOR YOU</span></Link><nav aria-label="Main navigation" className={open ? "navigation open" : "navigation"}>{[["/", "Home"], ["/shop", "Shop"], ["/categories", "Categories"], ["/#our-story", "Our story"], ["/contact", "Contact"]].map(([href, text]) => <Link key={href} href={href} aria-current={path === href ? "page" : undefined} onClick={() => setOpen(false)}>{text}</Link>)}</nav><div className="header-actions"><CurrencySelector/><button className="icon-button mobile-menu" aria-label="Toggle menu" aria-expanded={open} onClick={() => setOpen(!open)}><Icon name="menu"/></button></div></header></>;
+  return <><div className="announcement">{announcement}</div><header className="header"><Link href="/" className="brand" aria-label="Rikkyloops home"><BrandLogo priority/></Link><nav aria-label="Main navigation" className={open ? "navigation open" : "navigation"}>{[["/", "Home"], ["/shop", "Shop"], ["/categories", "Categories"], ["/#our-story", "Our story"], ["/contact", "Contact"]].map(([href, text]) => <Link key={href} href={href} aria-current={path === href ? "page" : undefined} onClick={() => setOpen(false)}>{text}</Link>)}</nav><div className="header-actions"><CurrencySelector/><button className="icon-button mobile-menu" aria-label="Toggle menu" aria-expanded={open} onClick={() => setOpen(!open)}><Icon name="menu"/></button></div></header></>;
 }
 export function ProductOptions({ product }: { product: Product }) {
   const [size, setSize] = useState(""); const [status, setStatus] = useState(""); const { add } = useContext(BagContext);

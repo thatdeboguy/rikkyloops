@@ -1,4 +1,6 @@
 "use client";
+import { BrandLogo } from "@/components/brand-logo";
+
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
 
@@ -24,7 +26,7 @@ export function AdminFrame({ username, section, onNavigate, onLogout, busy, chil
   return <div className="admin-workspace">
     <a className="skip-link" href="#admin-content">Skip to admin content</a>
     <aside className="admin-sidebar">
-      <div className="admin-sidebar-brand"><span>rikkyloops</span><small>ADMIN PANEL</small></div>
+      <div className="admin-sidebar-brand"><BrandLogo priority/><small>ADMIN PANEL</small></div>
       <button className="admin-menu-toggle" aria-label="Toggle admin navigation" aria-expanded={menuOpen} aria-controls="admin-navigation" onClick={() => setMenuOpen(!menuOpen)}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
       <div id="admin-navigation" className={`admin-navigation${menuOpen ? " is-open" : ""}`} onKeyDown={event => { if (event.key === "Escape") { setMenuOpen(false); document.querySelector<HTMLButtonElement>(".admin-menu-toggle")?.focus(); } }}>
         <p className="admin-nav-label">MANAGE YOUR STORE</p>

@@ -1,4 +1,6 @@
 "use client";
+import { BrandLogo } from "@/components/brand-logo";
+
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -36,7 +38,7 @@ export function AdminLogin() {
     try { await request("auth/login", "POST", { username: form.get("username"), password: form.get("password") }); router.replace("/admin"); router.refresh(); }
     catch (error) { setError(errorMessage(error)); } finally { setBusy(false); }
   }
-  return <div className="admin-login"><Link href="/" className="brand">rikkyloops</Link><span className="eyebrow">THE STUDIO</span><h1>Welcome back.</h1><p>Your collection, your story, your space.</p><form onSubmit={login}><label>Username<input name="username" autoComplete="username" required maxLength={80}/></label><label>Password<input type="password" name="password" autoComplete="current-password" required maxLength={128}/></label><button className="button wide" disabled={busy}>{busy ? "Signing in…" : "Sign in →"}</button><p className="admin-error" role="alert">{error}</p></form><Link href="/" className="text-link">Back to the storefront</Link></div>;
+  return <div className="admin-login"><Link href="/" className="brand" aria-label="Rikkyloops home"><BrandLogo priority/></Link><span className="eyebrow">THE STUDIO</span><h1>Welcome back.</h1><p>Your collection, your story, your space.</p><form onSubmit={login}><label>Username<input name="username" autoComplete="username" required maxLength={80}/></label><label>Password<input type="password" name="password" autoComplete="current-password" required maxLength={128}/></label><button className="button wide" disabled={busy}>{busy ? "Signing in…" : "Sign in →"}</button><p className="admin-error" role="alert">{error}</p></form><Link href="/" className="text-link">Back to the storefront</Link></div>;
 }
 
 function ImageUpload({ value, onChange, label = "Image" }: { value: string; onChange: (url: string) => void; label?: string }) {
