@@ -104,3 +104,5 @@
 
 .admin-sidebar-brand .brand-logo{width:112px;height:112px;margin:0 auto}.admin-sidebar-brand small{text-align:center}.admin-login>.brand{display:block;width:fit-content;margin:0 auto 30px}.admin-login .brand-logo{width:112px;height:112px}
 @media(max-width:750px){.admin-sidebar-brand{padding:12px 20px;display:flex;align-items:center;gap:16px}.admin-sidebar-brand .brand-logo{width:64px;height:64px;margin:0}.admin-sidebar-brand small{margin:0}.admin-menu-toggle{top:26px}}
+
+.admin-logo-preview{display:flex;flex-wrap:wrap;align-items:center;gap:18px;padding:16px;background:white;border:1px solid var(--admin-border);border-radius:8px}.admin-logo-preview p{flex:1;min-width:160px;font-size:12px;margin:0}.admin-logo-preview .brand-logo{width:100px;height:100px}

@@ -38,3 +38,5 @@ Design references: https://www.crochellaa.ng/, https://lazoet.com/, and https://
 ## Display currencies
 
 Enter independent NGN, USD and TRY prices in the admin product editor. NGN is required; blank USD or TRY prices are shown as unavailable in that currency. No conversion or exchange-rate environment variables are needed. The header selection persists in a cookie and applies to cards, details, bag totals and shop price sorting. Existing products keep their NGN prices; edit each to add other currencies. Deploy the backend migration 003-product-currencies.sql before the updated backend and frontend.
+
+Logo changes: open Admin > Website content > Branding, upload a JPG/PNG/WebP up to 3 MB, then Save website changes. The saved logo appears in the header, footer, admin sidebar and login. Use original logo restores the bundled logo after saving. Deploy the backend with logoImage content validation before deploying this frontend; no new database migration is required.

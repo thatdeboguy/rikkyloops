@@ -1,6 +1,7 @@
 import { cache } from "react";
 
 export const defaultContent = {
+  logoImage: "",
   announcement: "MADE BY HAND. WORN WITH LOVE. ✧ A LITTLE JOY IN EVERY LOOP.",
   footerText: "A little yarn. A lot of heart.\nThoughtfully handmade pieces,\nfor a life beautifully your own.",
   heroEyebrow: "SLOW FASHION. FULL OF FEELING.",

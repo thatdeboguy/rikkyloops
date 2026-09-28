@@ -15,6 +15,6 @@
 @media(max-width:700px){.currency-select{gap:2px}.currency-select svg{width:16px}.currency-select select{font-size:11px;min-width:72px}.header-actions{gap:8px}}
 
 /* Supplied circular brand mark, kept at its original proportions. */
-.brand-logo{display:block;width:88px;height:88px;object-fit:contain;border-radius:50%;flex-shrink:0}
+.brand-logo{display:block;width:88px;height:88px;object-fit:contain;flex-shrink:0}
 .header .brand{display:flex;align-items:center;flex-shrink:0}.footer-brand .brand{display:inline-block}.footer-brand .brand-logo{width:112px;height:112px}
 @media(max-width:700px){.header .brand-logo{width:68px;height:68px}}
