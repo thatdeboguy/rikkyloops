@@ -18,3 +18,8 @@
 .brand-logo{display:block;width:88px;height:88px;object-fit:contain;flex-shrink:0}
 .header .brand{display:flex;align-items:center;flex-shrink:0}.footer-brand .brand{display:inline-block}.footer-brand .brand-logo{width:112px;height:112px}
 @media(max-width:700px){.header .brand-logo{width:68px;height:68px}}
+
+/* Shared storefront type sizes on desktop and mobile. */
+.storefront p:not(.price),.storefront .footer-bottom{font-size:12px}
+.storefront a:not(.brand):not(.category-card):not(.product-image),.storefront .product-cta{font-size:8px}
+.storefront .eyebrow{font-size:10px}

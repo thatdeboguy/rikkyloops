@@ -46,6 +46,8 @@
 .admin-shell input:focus,.admin-shell select:focus,.admin-shell textarea:focus{border-color:var(--admin-accent)}
 .admin-shell textarea{resize:vertical}
 .admin-shell label{font-size:13px;font-weight:500}
+.admin-shell .admin-content label{font-weight:700}
+.admin-shell .admin-content input,.admin-shell .admin-content textarea,.admin-shell .admin-content select{font-weight:400}
 .admin-search{display:flex;gap:10px;max-width:490px;margin:0 0 24px}
 .admin-search input{flex:1}
 .admin-shell .table-wrap{border:1px solid var(--admin-border);border-radius:8px;overflow:auto}
