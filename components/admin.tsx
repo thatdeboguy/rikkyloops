@@ -8,6 +8,35 @@ import { AdminFrame, type AdminSection } from "@/components/admin-frame";
 import { categories, money, type Product } from "@/lib/catalog";
 import { defaultContent, type SiteContent } from "@/lib/content";
 
+function PasswordVisibilityIcon({ visible }: { visible: boolean }) {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      {visible ? (
+        <>
+          <path d="M3 3l18 18" />
+          <path d="M10.6 10.7a2 2 0 0 0 2.8 2.8" />
+          <path d="M9.9 4.2A10.8 10.8 0 0 1 12 4c5 0 9 5.5 9 8a7.7 7.7 0 0 1-2 3.5M6.6 6.6C4.4 8.1 3 10.5 3 12c0 2.5 4 8 9 8a9.8 9.8 0 0 0 4-.9" />
+        </>
+      ) : (
+        <>
+          <path d="M3 12c0-2.5 4-8 9-8s9 5.5 9 8-4 8-9 8-9-5.5-9-8Z" />
+          <circle cx="12" cy="12" r="2.5" />
+        </>
+      )}
+    </svg>
+  );
+}
+
 async function request(path: string, method = "GET", body?: unknown) {
   const file = body instanceof File;
   const response = await fetch(`/api/admin/${path}`, {
@@ -119,6 +148,7 @@ function PasswordForm() {
 export function AdminLogin() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const router = useRouter();
   async function login(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -156,16 +186,28 @@ export function AdminLogin() {
             maxLength={80}
           />
         </label>
-        <label>
-          Password
-          <input
-            type="password"
-            name="password"
-            autoComplete="current-password"
-            required
-            maxLength={128}
-          />
-        </label>
+        <div className="admin-password-field">
+          <label htmlFor="admin-password">Password</label>
+          <span className="admin-password-input">
+            <input
+              id="admin-password"
+              type={passwordVisible ? "text" : "password"}
+              name="password"
+              autoComplete="current-password"
+              required
+              maxLength={128}
+            />
+            <button
+              type="button"
+              className="admin-password-toggle"
+              aria-label={passwordVisible ? "Hide password" : "Show password"}
+              aria-pressed={passwordVisible}
+              onClick={() => setPasswordVisible((visible) => !visible)}
+            >
+              <PasswordVisibilityIcon visible={passwordVisible} />
+            </button>
+          </span>
+        </div>
         <button className="button wide" disabled={busy}>
           {busy ? "Signing in…" : "Sign in →"}
         </button>
