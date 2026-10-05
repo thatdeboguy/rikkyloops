@@ -3,7 +3,13 @@ import { Price } from "@/components/currency";
 import Image from "next/image";
 import Link from "next/link";
 import { categories, type Product } from "@/lib/catalog";
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({
+  product,
+  showCategory = true,
+}: {
+  product: Product;
+  showCategory?: boolean;
+}) {
   return (
     <article className="product-card">
       <Link href={`/shop/${product.id}`} className="product-image">
@@ -17,7 +23,7 @@ export function ProductCard({ product }: { product: Product }) {
         <span className="product-cta">Discover this piece</span>
       </Link>
       <div className="product-meta">
-        <span>{product.category}</span>
+        {showCategory && <span>{product.category}</span>}
         <span>{product.color}</span>
       </div>
       <div className="product-name">

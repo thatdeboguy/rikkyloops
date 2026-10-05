@@ -59,7 +59,7 @@ export default async function Home() {
         </div>
         <div className="product-grid">
           {products.slice(0, 4).map((p) => (
-            <ProductCard product={p} key={p.id} />
+            <ProductCard product={p} showCategory={false} key={p.id} />
           ))}
         </div>
       </section>
