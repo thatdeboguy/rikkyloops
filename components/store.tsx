@@ -144,6 +144,7 @@ export function Header({ announcement }: { announcement?: string }) {
             ["/", "Home"],
             ["/shop", "Shop"],
             ["/categories", "Categories"],
+            ["/custom-design", "Custom design"],
             ["/#our-story", "Our story"],
             ["/contact", "Contact"],
           ].map(([href, text]) => (
