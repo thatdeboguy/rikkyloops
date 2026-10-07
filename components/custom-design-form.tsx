@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 
 const MAX_IMAGE_BYTES = 3 * 1024 * 1024;
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -24,7 +25,7 @@ export function CustomDesignForm() {
       } catch { setStatus("We couldn’t submit your request. Please try again shortly."); }
       finally { setBusy(false); }
     }}>
-      <h2>Tell us about your dress.</h2>
+      <h2>Tell us about your Piece.</h2>
       <label htmlFor="custom-name">Your name</label>
       <input id="custom-name" name="name" autoComplete="name" required maxLength={100} />
       <label htmlFor="custom-email">Email address</label>
@@ -33,11 +34,18 @@ export function CustomDesignForm() {
       <input id="custom-phone" name="phone" type="tel" autoComplete="tel" required minLength={7} maxLength={30} />
       <label htmlFor="custom-address">Delivery address</label>
       <textarea id="custom-address" name="deliveryAddress" autoComplete="street-address" required minLength={10} maxLength={500} rows={3} />
+      <div className="custom-design-field-heading">
+        <label htmlFor="custom-measurements">Your measurements <span>(optional)</span></label>
+        <Link className="text-link" href="/size-guide" target="_blank" rel="noopener noreferrer">
+          View size guide ↗
+        </Link>
+      </div>
+      <textarea id="custom-measurements" name="measurements" maxLength={1000} rows={4} placeholder="For example: bust, waist, hips, shoulder-to-hem, and usual dress size" />
       <label htmlFor="custom-notes">Anything else we should know? <span>(optional)</span></label>
-      <textarea id="custom-notes" name="notes" maxLength={2000} rows={4} placeholder="Occasion, preferred colour, timeline, or other details" />
+      <textarea id="custom-notes" name="notes" maxLength={2000} rows={4} placeholder="Occasion, preferred colour, or other details" />
       <label htmlFor="custom-image">Design picture</label>
       <input id="custom-image" name="image" type="file" accept="image/jpeg,image/png,image/webp" required />
-      <small>JPG, PNG, or WebP · maximum 3 MB</small>
+      <small>JPG, PNG, or WebP · maximum 2 MB</small>
       <button className="button" type="submit" disabled={busy}>{busy ? "Sending…" : "Send my design →"}</button>
       <p role="status" aria-live="polite">{status}</p>
     </form>
