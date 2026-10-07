@@ -129,6 +129,8 @@ export function Icon({ name }: { name: "bag" | "search" | "menu" }) {
 export function Header({ announcement }: { announcement?: string }) {
   const path = usePathname();
   const [open, setOpen] = useState(false);
+  const { items } = useContext(BagContext);
+  const bagCount = items.reduce((total, item) => total + item.quantity, 0);
   return (
     <>
       <div className="announcement">{announcement}</div>
@@ -159,6 +161,9 @@ export function Header({ announcement }: { announcement?: string }) {
         </nav>
         <div className="header-actions">
           <CurrencySelector />
+          <Link className="bag-link" href="/bag" aria-label={`Shopping bag with ${bagCount} ${bagCount === 1 ? "item" : "items"}`}>
+            <Icon name="bag" /> <span>Bag ({bagCount})</span>
+          </Link>
           <button
             className="icon-button mobile-menu"
             aria-label="Toggle menu"
@@ -174,6 +179,7 @@ export function Header({ announcement }: { announcement?: string }) {
 }
 export function ProductOptions({ product }: { product: Product }) {
   const [size, setSize] = useState("");
+  const [quantity, setQuantity] = useState(1);
   const [status, setStatus] = useState("");
   const { add } = useContext(BagContext);
   return (
@@ -202,6 +208,12 @@ export function ProductOptions({ product }: { product: Product }) {
           </button>
         ))}
       </div>
+      <label className="product-quantity">
+        Quantity
+        <select value={quantity} onChange={(event) => setQuantity(Number(event.target.value))}>
+          {Array.from({ length: 10 }, (_, index) => index + 1).map((value) => <option key={value} value={value}>{value}</option>)}
+        </select>
+      </label>
       <button
         className="button wide"
         onClick={() => {
@@ -209,15 +221,15 @@ export function ProductOptions({ product }: { product: Product }) {
             setStatus("Please select a size first.");
             return;
           }
-          add(product, size);
-          setStatus("Added to your bag.");
+          for (let count = 0; count < quantity; count += 1) add(product, size);
+          setStatus(`${quantity} ${quantity === 1 ? "item" : "items"} added to your bag.`);
         }}
       >
         Add to bag <span>↗</span>
       </button>
       <p role="status">
         {status}{" "}
-        {status.startsWith("Added") && (
+        {status.includes("added") && (
           <Link className="text-link" href="/bag">
             View bag →
           </Link>
@@ -294,8 +306,8 @@ export function Bag() {
           This is a preview catalogue. Online ordering is not open yet; no
           payment will be collected.
         </p>
-        <Link href="/contact" className="button wide">
-          Ask about these pieces ↗
+        <Link href="/checkout" className="button wide">
+          Continue to checkout →
         </Link>
         <Link className="text-link" href="/shop">
           Continue shopping
@@ -304,6 +316,54 @@ export function Bag() {
     </div>
   );
 }
+export function Checkout() {
+  const { items } = useContext(BagContext);
+  const [status, setStatus] = useState("");
+  if (!items.length) return (
+    <div className="empty"><h2>Your bag is empty.</h2><p>Add a piece before previewing checkout.</p><Link className="button" href="/shop">Explore the collection →</Link></div>
+  );
+  return (
+    <div className="checkout-layout">
+      <form className="checkout-form" onSubmit={(event) => { event.preventDefault(); setStatus("Checkout is ready for payment integration. No order or payment was submitted."); }}>
+        <div className="checkout-progress" aria-label="Checkout progress"><strong>Bag</strong><span>→</span><strong>Information</strong><span>→</span><span>Payment</span></div>
+        <section className="checkout-section">
+          <div className="split"><h2>Contact</h2><span>Secure checkout preview</span></div>
+          <label>Email address<input name="email" type="email" autoComplete="email" required /></label>
+          <label className="checkout-checkbox"><input name="updates" type="checkbox" /> Email me about new handmade pieces</label>
+        </section>
+        <section className="checkout-section">
+          <h2>Delivery address</h2>
+          <div className="checkout-fields two"><label>First name<input name="firstName" autoComplete="given-name" required /></label><label>Last name<input name="lastName" autoComplete="family-name" required /></label></div>
+          <label>Country or region<select name="country" autoComplete="country" defaultValue="NG"><option value="NG">Nigeria</option><option value="TR">Türkiye</option><option value="US">United States</option><option value="GB">United Kingdom</option></select></label>
+          <label>Address<input name="address" autoComplete="street-address" required /></label>
+          <div className="checkout-fields two"><label>City<input name="city" autoComplete="address-level2" required /></label><label>State / province<input name="state" autoComplete="address-level1" required /></label></div>
+          <div className="checkout-fields two"><label>Postal code<input name="postalCode" autoComplete="postal-code" required /></label><label>Phone<input name="phone" type="tel" autoComplete="tel" required /></label></div>
+        </section>
+        <section className="checkout-section">
+          <h2>Shipping method</h2>
+          <label className="shipping-option"><input type="radio" name="shipping" value="standard" defaultChecked /><span><strong>Standard delivery</strong><small>Delivery timing and price will be confirmed before launch.</small></span><strong>—</strong></label>
+        </section>
+        <section className="checkout-section checkout-payment-preview">
+          <h2>Payment</h2>
+          <p>Payment options will appear here when a provider is connected.</p>
+          <div className="payment-placeholder"><span>Card</span><span>Digital wallet</span><span>Bank payment</span></div>
+        </section>
+        <button className="button wide">Preview order submission →</button>
+        <p className="checkout-disclaimer">This checkout is a UI preview. It does not create an order, save these details, or charge you.</p>
+        {status && <p role="status" className="notice">{status}</p>}
+      </form>
+      <aside className="checkout-summary">
+        <h2>Order summary</h2>
+        <div className="checkout-items">{items.map(({ product, size, quantity }) => <article key={`${product.id}-${size}`} className="checkout-item"><div className="checkout-thumb" style={{ backgroundImage: `url("${product.image}")` }}><span>{quantity}</span></div><div><strong>{product.name}</strong><p>{product.color} · {size}</p></div><Price product={product} quantity={quantity} /></article>)}</div>
+        <div className="checkout-total-row"><span>Subtotal</span><strong><BagSubtotal items={items} /></strong></div>
+        <div className="checkout-total-row"><span>Shipping</span><span>Calculated when ordering opens</span></div>
+        <div className="checkout-total-row checkout-grand-total"><strong>Total</strong><strong><BagSubtotal items={items} /></strong></div>
+        <Link className="text-link" href="/bag">← Return to bag</Link>
+      </aside>
+    </div>
+  );
+}
+
 export function ContactForm() {
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
