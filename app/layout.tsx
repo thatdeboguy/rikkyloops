@@ -59,7 +59,6 @@ export default async function RootLayout({
                         <Link href="/bag">Shopping bag</Link>
                         <Link href="/categories">Our categories</Link>
                         <Link href="/custom-design">Request a custom dress</Link>
-                        <Link href="/#our-story">Our story</Link>
                       </div>
                       <div>
                         <h3>Here to help</h3>

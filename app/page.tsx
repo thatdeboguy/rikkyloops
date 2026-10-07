@@ -63,21 +63,25 @@ export default async function Home() {
           ))}
         </div>
       </section>
-      <section id="our-story" className="story">
+      <section id="custom-design" className="story">
         <div className="story-art">
           <Image
             src={content.storyImage || "/images/sweater.webp"}
-            alt="The delicate handmade stitchwork of a sage crochet cardigan"
+            alt="Handmade crochet details that can inspire a custom dress"
             fill
             sizes="(max-width: 700px) 100vw, 50vw"
           />
-          <span>Good things take a little time.</span>
+          <span>Dream it. We’ll make it by hand.</span>
         </div>
         <div className="story-copy">
-          <span className="eyebrow">MORE THAN JUST A PIECE OF CLOTHING</span>
-          <h2 className="content-text">{content.storyTitle}</h2>
-          <p className="content-text">{content.storyText}</p>
-          <Link className="text-link" href="/contact">
+          <span className="eyebrow">A DRESS MADE FROM YOUR IDEA</span>
+          <h2>Have something special in mind?</h2>
+          <p>
+            Share a picture of the dress you love and tell us where it needs to
+            go. We’ll get in touch to discuss measurements, colours, timing,
+            and all the thoughtful details that will make it yours.
+          </p>
+          <Link className="text-link" href="/custom-design">
             Let’s make something personal ↗
           </Link>
         </div>
