@@ -4,8 +4,13 @@ import { BrandLogo } from "@/components/brand-logo";
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
 
-export type AdminSection = "products" | "content" | "settings";
+export type AdminSection = "products" | "leads" | "content" | "settings";
 const sections = [
+  {
+    id: "leads",
+    label: "Leads",
+    description: "Review and manage custom dress requests.",
+  },
   {
     id: "products",
     label: "Products",
@@ -42,6 +47,11 @@ function SectionIcon({ name }: { name: AdminSection }) {
           <rect x="14" y="3" width="7" height="7" rx="1" />
           <rect x="3" y="14" width="7" height="7" rx="1" />
           <rect x="14" y="14" width="7" height="7" rx="1" />
+        </>
+      ) : name === "leads" ? (
+        <>
+          <circle cx="8" cy="8" r="3" />
+          <path d="M3 20v-1a5 5 0 0 1 10 0v1M16 7h5M16 12h5M16 17h5" />
         </>
       ) : name === "content" ? (
         <>

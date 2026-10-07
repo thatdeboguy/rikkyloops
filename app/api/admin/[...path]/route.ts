@@ -6,7 +6,7 @@ type Context = { params: Promise<{ path: string[] }> };
 async function handle(request: Request, { params }: Context) {
   const path = (await params).path.join("/");
   const method = request.method;
-  const allowed = (path === "auth/login" && method === "POST") || (["auth/logout", "auth/password"].includes(path) && method === "POST") || (path === "auth/me" && method === "GET") || (path === "products" && ["GET", "POST"].includes(method)) || (/^products\/[a-f0-9-]{36}$/i.test(path) && ["PATCH", "DELETE"].includes(method)) || (path === "content" && ["GET", "PATCH"].includes(method)) || (path === "uploads" && method === "POST");
+  const allowed = (path === "auth/login" && method === "POST") || (["auth/logout", "auth/password"].includes(path) && method === "POST") || (path === "auth/me" && method === "GET") || (path === "products" && ["GET", "POST"].includes(method)) || (/^products\/[a-f0-9-]{36}$/i.test(path) && ["PATCH", "DELETE"].includes(method)) || (path === "custom-designs" && method === "GET") || (/^custom-designs\/[a-f0-9-]{36}$/i.test(path) && ["PATCH", "DELETE"].includes(method)) || (path === "content" && ["GET", "PATCH"].includes(method)) || (path === "uploads" && method === "POST");
   if (!allowed) return NextResponse.json({ message: "Endpoint not found." }, { status: 404 });
   if (method !== "GET" && request.headers.get("origin") !== new URL(request.url).origin) return NextResponse.json({ message: "Request origin is not allowed." }, { status: 403 });
   const jar = await cookies();

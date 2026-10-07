@@ -4,6 +4,7 @@ import { BrandLogo } from "@/components/brand-logo";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { AdminFrame, type AdminSection } from "@/components/admin-frame";
 import { categories, money, type Product } from "@/lib/catalog";
 import { defaultContent, type SiteContent } from "@/lib/content";
@@ -761,6 +762,107 @@ function ContentEditor() {
   );
 }
 
+type CustomDesignLead = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  deliveryAddress: string;
+  measurements: string;
+  notes: string;
+  imageUrl: string;
+  imageBytes: number;
+  status: "new" | "contacted" | "closed";
+  createdAt: string;
+  updatedAt: string;
+};
+
+const leadStatusLabel = { new: "New", contacted: "Contacted", closed: "Closed" };
+
+function LeadsManager({ onBusy }: { onBusy: (busy: boolean) => void }) {
+  const [leads, setLeads] = useState<CustomDesignLead[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+  const [search, setSearch] = useState("");
+  const [editing, setEditing] = useState<CustomDesignLead | null>(null);
+  const [deleting, setDeleting] = useState<CustomDesignLead | null>(null);
+  const load = useCallback(() => {
+    request("custom-designs")
+      .then((data) => { setLeads(Array.isArray(data) ? data : []); setError(""); })
+      .catch((e) => setError(errorMessage(e)))
+      .finally(() => setLoading(false));
+  }, []);
+  useEffect(() => { load(); }, [load]);
+  const query = search.trim().toLowerCase();
+  const filtered = leads.filter((lead) => !query || [lead.name, lead.email, lead.phone, lead.deliveryAddress, lead.measurements, lead.notes, lead.status].some((value) => value?.toLowerCase().includes(query)));
+
+  return (
+    <>
+      <p className="admin-error" role="alert">{error}</p>
+      <p className="admin-success" role="status">{notice}</p>
+      <section className="admin-panel">
+        <div className="admin-toolbar">
+          <h2>Custom design leads</h2>
+          <span>{filtered.length} {filtered.length === 1 ? "lead" : "leads"}</span>
+        </div>
+        <div className="admin-search">
+          <input aria-label="Search leads" placeholder="Search leads…" value={search} onChange={(event) => setSearch(event.target.value)} />
+        </div>
+        {loading ? <p role="status">Loading leads…</p> : (
+          <div className="table-wrap">
+            <table className="admin-table admin-leads-table">
+              <thead><tr><th>Date</th><th>Customer</th><th>Contact</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody>
+                {filtered.map((lead) => (
+                  <tr key={lead.id}>
+                    <td>{new Date(lead.createdAt).toLocaleDateString()}</td>
+                    <td><strong>{lead.name}</strong><small>{lead.deliveryAddress}</small></td>
+                    <td><a href={`mailto:${lead.email}`}>{lead.email}</a><small><a href={`tel:${lead.phone}`}>{lead.phone}</a></small></td>
+                    <td><span className={`lead-status lead-status-${lead.status}`}>{leadStatusLabel[lead.status]}</span></td>
+                    <td><div className="admin-row-actions"><button className="admin-secondary" onClick={() => { setEditing(lead); setNotice(""); }}>View / edit</button><button className="admin-danger" onClick={() => setDeleting(lead)}>Delete</button></div></td>
+                  </tr>
+                ))}
+                {!filtered.length && <tr><td colSpan={5}>No matching leads found.</td></tr>}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+      {editing && (
+        <div className="admin-lead-overlay" role="dialog" aria-modal="true" aria-labelledby="lead-editor-title">
+          <form className="admin-lead-modal" onSubmit={async (event) => {
+            event.preventDefault();
+            const form = new FormData(event.currentTarget);
+            onBusy(true); setError("");
+            try {
+              await request(`custom-designs/${editing.id}`, "PATCH", Object.fromEntries(form));
+              setEditing(null); setNotice("Lead updated."); await load();
+            } catch (e) { setError(errorMessage(e)); }
+            finally { onBusy(false); }
+          }}>
+            <div className="admin-toolbar"><div><h2 id="lead-editor-title">Lead details</h2><p>Submitted {new Date(editing.createdAt).toLocaleString()}</p></div><button type="button" className="admin-secondary" onClick={() => setEditing(null)}>Close</button></div>
+            <div className="admin-lead-detail-grid">
+              <a className="admin-lead-image" href={editing.imageUrl} target="_blank" rel="noreferrer" title="Open full-size image in a new tab"><Image src={editing.imageUrl} loader={({ src }) => src} unoptimized width={800} height={1000} alt={`Custom dress reference sent by ${editing.name}`} /><span>Open full-size image ↗</span></a>
+              <div className="admin-editor admin-lead-fields">
+                <div className="admin-fields"><label>Name<input name="name" required maxLength={100} defaultValue={editing.name} /></label><label>Status<select name="status" defaultValue={editing.status}><option value="new">New</option><option value="contacted">Contacted</option><option value="closed">Closed</option></select></label></div>
+                <div className="admin-fields"><label>Email<input name="email" type="email" required maxLength={254} defaultValue={editing.email} /></label><label>Phone<input name="phone" type="tel" required maxLength={30} defaultValue={editing.phone} /></label></div>
+                <label>Delivery address<textarea name="deliveryAddress" required minLength={10} maxLength={500} rows={3} defaultValue={editing.deliveryAddress} /></label>
+                <label>Measurements<textarea name="measurements" maxLength={1000} rows={4} defaultValue={editing.measurements} /></label>
+                <label>Notes<textarea name="notes" maxLength={2000} rows={4} defaultValue={editing.notes} /></label>
+              </div>
+            </div>
+            <div className="admin-row-actions admin-lead-modal-actions"><button className="button">Save changes</button><button type="button" className="admin-danger" onClick={() => { setEditing(null); setDeleting(editing); }}>Delete lead</button></div>
+          </form>
+        </div>
+      )}
+      {deleting && (
+        <div className="admin-confirm" role="alertdialog" aria-modal="true" aria-labelledby="delete-lead-title"><div><h2 id="delete-lead-title">Delete this lead?</h2><p>“{deleting.name}” and their uploaded design image will be permanently removed from the database and Cloudflare R2. This cannot be undone.</p><div className="admin-row-actions"><button className="admin-secondary" onClick={() => setDeleting(null)}>Keep lead</button><button className="button" onClick={async () => { onBusy(true); setError(""); try { await request(`custom-designs/${deleting.id}`, "DELETE"); setDeleting(null); setNotice("Lead and design image deleted."); await load(); } catch (e) { setError(errorMessage(e)); } finally { onBusy(false); } }}>Delete lead and image</button></div></div></div>
+      )}
+    </>
+  );
+}
+
 export function AdminDashboard({ username }: { username: string }) {
   const [tab, setTab] = useState<AdminSection>("products");
   const [products, setProducts] = useState<Product[]>([]);
@@ -835,6 +937,8 @@ export function AdminDashboard({ username }: { username: string }) {
       </p>
       {tab === "settings" ? (
         <PasswordForm />
+      ) : tab === "leads" ? (
+        <LeadsManager onBusy={setBusy} />
       ) : tab === "content" ? null : editing !== undefined ? (
         <ProductEditor
           key={editing?.id || "new"}
