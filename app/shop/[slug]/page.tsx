@@ -11,7 +11,8 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const p = (await getProducts()).find((p) => p.id === slug);
+  const products = await getProducts();
+  const p = products.find((p) => p.id === slug);
   return { title: p?.name || "Piece not found" };
 }
 export default async function ProductPage({
@@ -20,7 +21,8 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const p = (await getProducts()).find((p) => p.id === slug);
+  const products = await getProducts();
+  const p = products.find((product) => product.id === slug);
   if (!p) notFound();
   return (
     <>
@@ -47,7 +49,7 @@ export default async function ProductPage({
             <Price product={p} />
           </p>
           <p>{p.description}</p>
-          <ProductOptions product={p} />
+          <ProductOptions product={p} recommendations={products.filter((item) => item.id !== p.id).slice(0, 3)} />
           <details>
             <summary>Materials & care</summary>
             <p>

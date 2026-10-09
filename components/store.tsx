@@ -2,10 +2,12 @@
 import { BrandLogo } from "@/components/brand-logo";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   createContext,
   useContext,
+  useEffect,
   useMemo,
   useState,
   useSyncExternalStore,
@@ -177,9 +179,10 @@ export function Header({ announcement }: { announcement?: string }) {
     </>
   );
 }
-export function ProductOptions({ product }: { product: Product }) {
+export function ProductOptions({ product, recommendations = [] }: { product: Product; recommendations?: Product[] }) {
   const [size, setSize] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [status, setStatus] = useState("");
   const { add } = useContext(BagContext);
   return (
@@ -223,6 +226,7 @@ export function ProductOptions({ product }: { product: Product }) {
           }
           for (let count = 0; count < quantity; count += 1) add(product, size);
           setStatus(`${quantity} ${quantity === 1 ? "item" : "items"} added to your bag.`);
+          setDrawerOpen(true);
         }}
       >
         Add to bag <span>↗</span>
@@ -235,6 +239,38 @@ export function ProductOptions({ product }: { product: Product }) {
           </Link>
         )}
       </p>
+      {drawerOpen && <CartDrawer recommendations={recommendations} onClose={() => setDrawerOpen(false)} />}
+    </div>
+  );
+}
+
+function CartDrawer({ recommendations, onClose }: { recommendations: Product[]; onClose: () => void }) {
+  const { items, update } = useContext(BagContext);
+  const itemCount = items.reduce((total, item) => total + item.quantity, 0);
+  useEffect(() => {
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") onClose(); };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => { document.body.style.overflow = previous; window.removeEventListener("keydown", closeOnEscape); };
+  }, [onClose]);
+  return (
+    <div className="cart-drawer-layer" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
+      <aside className="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-drawer-title">
+        <header className="cart-drawer-header"><h2 id="cart-drawer-title">Your bag ({itemCount})</h2><button type="button" className="cart-drawer-close" aria-label="Close shopping bag" onClick={onClose}>×</button></header>
+        <div className="cart-drawer-scroll">
+          <div className="cart-drawer-items">
+            {items.map(({ product, size, quantity }) => (
+              <article className="cart-drawer-item" key={`${product.id}-${size}`}>
+                <Link href={`/shop/${product.id}`} onClick={onClose} className="cart-drawer-image"><Image src={product.image || "/images/placeholder.svg"} unoptimized={product.image.startsWith("https://")} alt={product.name} fill sizes="110px" /></Link>
+                <div className="cart-drawer-item-copy"><div className="split"><Link href={`/shop/${product.id}`} onClick={onClose}><strong>{product.name}</strong></Link><Price product={product} quantity={quantity} /></div><p>{product.color} · Size {size}</p><div className="cart-drawer-item-actions"><div className="cart-stepper" aria-label={`Quantity for ${product.name}`}><button type="button" aria-label="Decrease quantity" onClick={() => update(product.id, size, quantity - 1)}>−</button><span>{quantity}</span><button type="button" aria-label="Increase quantity" disabled={quantity >= 20} onClick={() => update(product.id, size, quantity + 1)}>+</button></div><button type="button" className="text-button" onClick={() => update(product.id, size, 0)}>Remove</button></div></div>
+              </article>
+            ))}
+          </div>
+          {!!recommendations.length && <section className="cart-recommendations"><span className="eyebrow">YOU MAY ALSO LIKE</span><div>{recommendations.slice(0, 3).map((recommended) => <Link key={recommended.id} href={`/shop/${recommended.id}`} onClick={onClose} className="cart-recommendation"><span className="cart-recommendation-image"><Image src={recommended.image || "/images/placeholder.svg"} unoptimized={recommended.image.startsWith("https://")} alt={recommended.name} fill sizes="80px" /></span><span><strong>{recommended.name}</strong><small>{recommended.color}</small><Price product={recommended} /></span></Link>)}</div></section>}
+        </div>
+        <footer className="cart-drawer-footer"><div className="split"><strong>Subtotal</strong><strong><BagSubtotal items={items} /></strong></div><p>Shipping and any applicable discounts are calculated at checkout.</p><Link href="/checkout" className="button wide" onClick={onClose}>Checkout →</Link><button type="button" className="cart-continue" onClick={onClose}>Continue shopping</button></footer>
+      </aside>
     </div>
   );
 }
