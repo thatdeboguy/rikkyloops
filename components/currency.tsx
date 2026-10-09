@@ -80,7 +80,7 @@ export function Price({
     </span>
   );
 }
-export function BagSubtotal({
+export function CartSubtotal({
   items,
 }: {
   items: { product: Product; quantity: number }[];

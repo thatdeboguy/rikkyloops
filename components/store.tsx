@@ -15,31 +15,39 @@ import {
 } from "react";
 import { type Product } from "@/lib/catalog";
 
-import { CurrencySelector, Price, BagSubtotal } from "@/components/currency";
+import { CurrencySelector, Price, CartSubtotal } from "@/components/currency";
 
 type Item = { product: Product; size: string; quantity: number };
-const BagContext = createContext<{
+const CartContext = createContext<{
   items: Item[];
   add: (product: Product, size: string) => void;
   update: (id: string, size: string, quantity: number) => void;
 }>({ items: [], add: () => {}, update: () => {} });
-let memoryBag = "[]";
-function subscribeBag(callback: () => void) {
+let memoryCart = "[]";
+function subscribeCart(callback: () => void) {
   window.addEventListener("storage", callback);
-  window.addEventListener("rikkyloops-bag", callback);
+  window.addEventListener("rikkyloops-cart", callback);
   return () => {
     window.removeEventListener("storage", callback);
-    window.removeEventListener("rikkyloops-bag", callback);
+    window.removeEventListener("rikkyloops-cart", callback);
   };
 }
-function readBag() {
+function readCart() {
   try {
-    return localStorage.getItem("rikkyloops-bag") || memoryBag;
+    const current = localStorage.getItem("rikkyloops-cart");
+    if (current) return current;
+    const legacy = localStorage.getItem("rikkyloops-bag");
+    if (legacy) {
+      localStorage.setItem("rikkyloops-cart", legacy);
+      localStorage.removeItem("rikkyloops-bag");
+      return legacy;
+    }
+    return memoryCart;
   } catch {
-    return memoryBag;
+    return memoryCart;
   }
 }
-function parseBag(value: string): Item[] {
+function parseCart(value: string): Item[] {
   try {
     const saved = JSON.parse(value);
     return Array.isArray(saved)
@@ -63,14 +71,14 @@ function parseBag(value: string): Item[] {
   }
 }
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const saved = useSyncExternalStore(subscribeBag, readBag, () => "[]");
-  const items = useMemo(() => parseBag(saved), [saved]);
+  const saved = useSyncExternalStore(subscribeCart, readCart, () => "[]");
+  const items = useMemo(() => parseCart(saved), [saved]);
   function setItems(change: (old: Item[]) => Item[]) {
-    memoryBag = JSON.stringify(change(parseBag(readBag())));
+    memoryCart = JSON.stringify(change(parseCart(readCart())));
     try {
-      localStorage.setItem("rikkyloops-bag", memoryBag);
+      localStorage.setItem("rikkyloops-cart", memoryCart);
     } catch {}
-    window.dispatchEvent(new Event("rikkyloops-bag"));
+    window.dispatchEvent(new Event("rikkyloops-cart"));
   }
   function add(product: Product, size: string) {
     setItems((old) => {
@@ -96,9 +104,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     );
   }
   return (
-    <BagContext.Provider value={{ items, add, update }}>
+    <CartContext.Provider value={{ items, add, update }}>
       {children}
-    </BagContext.Provider>
+    </CartContext.Provider>
   );
 }
 export function Icon({ name }: { name: "bag" | "search" | "menu" }) {
@@ -131,8 +139,8 @@ export function Icon({ name }: { name: "bag" | "search" | "menu" }) {
 export function Header({ announcement }: { announcement?: string }) {
   const path = usePathname();
   const [open, setOpen] = useState(false);
-  const { items } = useContext(BagContext);
-  const bagCount = items.reduce((total, item) => total + item.quantity, 0);
+  const { items } = useContext(CartContext);
+  const cartCount = items.reduce((total, item) => total + item.quantity, 0);
   return (
     <>
       <div className="announcement">{announcement}</div>
@@ -163,8 +171,8 @@ export function Header({ announcement }: { announcement?: string }) {
         </nav>
         <div className="header-actions">
           <CurrencySelector />
-          <Link className="bag-link" href="/bag" aria-label={`Shopping bag with ${bagCount} ${bagCount === 1 ? "item" : "items"}`}>
-            <Icon name="bag" /> <span>Bag ({bagCount})</span>
+          <Link className="bag-link" href="/cart" aria-label={`Shopping cart with ${cartCount} ${cartCount === 1 ? "item" : "items"}`}>
+            <Icon name="bag" /> <span>Cart ({cartCount})</span>
           </Link>
           <button
             className="icon-button mobile-menu"
@@ -184,7 +192,7 @@ export function ProductOptions({ product, recommendations = [] }: { product: Pro
   const [quantity, setQuantity] = useState(1);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [status, setStatus] = useState("");
-  const { add } = useContext(BagContext);
+  const { add } = useContext(CartContext);
   return (
     <div className="product-options">
       <p>
@@ -225,17 +233,17 @@ export function ProductOptions({ product, recommendations = [] }: { product: Pro
             return;
           }
           for (let count = 0; count < quantity; count += 1) add(product, size);
-          setStatus(`${quantity} ${quantity === 1 ? "item" : "items"} added to your bag.`);
+          setStatus(`${quantity} ${quantity === 1 ? "item" : "items"} added to your cart.`);
           setDrawerOpen(true);
         }}
       >
-        Add to bag <span>↗</span>
+        Add to cart <span>↗</span>
       </button>
       <p role="status">
         {status}{" "}
         {status.includes("added") && (
-          <Link className="text-link" href="/bag">
-            View bag →
+          <Link className="text-link" href="/cart">
+            View cart →
           </Link>
         )}
       </p>
@@ -245,7 +253,7 @@ export function ProductOptions({ product, recommendations = [] }: { product: Pro
 }
 
 function CartDrawer({ recommendations, onClose }: { recommendations: Product[]; onClose: () => void }) {
-  const { items, update } = useContext(BagContext);
+  const { items, update } = useContext(CartContext);
   const itemCount = items.reduce((total, item) => total + item.quantity, 0);
   useEffect(() => {
     const previous = document.body.style.overflow;
@@ -257,7 +265,7 @@ function CartDrawer({ recommendations, onClose }: { recommendations: Product[]; 
   return (
     <div className="cart-drawer-layer" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
       <aside className="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-drawer-title">
-        <header className="cart-drawer-header"><h2 id="cart-drawer-title">Your bag ({itemCount})</h2><button type="button" className="cart-drawer-close" aria-label="Close shopping bag" onClick={onClose}>×</button></header>
+        <header className="cart-drawer-header"><h2 id="cart-drawer-title">Your cart ({itemCount})</h2><button type="button" className="cart-drawer-close" aria-label="Close shopping cart" onClick={onClose}>×</button></header>
         <div className="cart-drawer-scroll">
           <div className="cart-drawer-items">
             {items.map(({ product, size, quantity }) => (
@@ -269,18 +277,18 @@ function CartDrawer({ recommendations, onClose }: { recommendations: Product[]; 
           </div>
           {!!recommendations.length && <section className="cart-recommendations"><span className="eyebrow">YOU MAY ALSO LIKE</span><div>{recommendations.slice(0, 3).map((recommended) => <Link key={recommended.id} href={`/shop/${recommended.id}`} onClick={onClose} className="cart-recommendation"><span className="cart-recommendation-image"><Image src={recommended.image || "/images/placeholder.svg"} unoptimized={recommended.image.startsWith("https://")} alt={recommended.name} fill sizes="80px" /></span><span><strong>{recommended.name}</strong><small>{recommended.color}</small><Price product={recommended} /></span></Link>)}</div></section>}
         </div>
-        <footer className="cart-drawer-footer"><div className="split"><strong>Subtotal</strong><strong><BagSubtotal items={items} /></strong></div><p>Shipping and any applicable discounts are calculated at checkout.</p><Link href="/checkout" className="button wide" onClick={onClose}>Checkout →</Link><button type="button" className="cart-continue" onClick={onClose}>Continue shopping</button></footer>
+        <footer className="cart-drawer-footer"><div className="split"><strong>Subtotal</strong><strong><CartSubtotal items={items} /></strong></div><p>Shipping and any applicable discounts are calculated at checkout.</p><Link href="/checkout" className="button wide" onClick={onClose}>Checkout →</Link><button type="button" className="cart-continue" onClick={onClose}>Continue shopping</button></footer>
       </aside>
     </div>
   );
 }
-export function Bag() {
-  const { items, update } = useContext(BagContext);
+export function Cart() {
+  const { items, update } = useContext(CartContext);
   if (!items.length)
     return (
       <div className="empty">
         <h2>A little room for something lovely.</h2>
-        <p>Your bag is empty. Find a piece that feels like you.</p>
+        <p>Your cart is empty. Find a piece that feels like you.</p>
         <Link className="button" href="/shop">
           Explore the collection ↗
         </Link>
@@ -331,11 +339,11 @@ export function Bag() {
         ))}
       </div>
       <aside className="order-summary">
-        <h2>Your bag</h2>
+        <h2>Your cart</h2>
         <div className="split">
           <p>Subtotal</p>
           <strong>
-            <BagSubtotal items={items} />
+            <CartSubtotal items={items} />
           </strong>
         </div>
         <p>
@@ -353,15 +361,15 @@ export function Bag() {
   );
 }
 export function Checkout() {
-  const { items } = useContext(BagContext);
+  const { items } = useContext(CartContext);
   const [status, setStatus] = useState("");
   if (!items.length) return (
-    <div className="empty"><h2>Your bag is empty.</h2><p>Add a piece before previewing checkout.</p><Link className="button" href="/shop">Explore the collection →</Link></div>
+    <div className="empty"><h2>Your cart is empty.</h2><p>Add a piece before previewing checkout.</p><Link className="button" href="/shop">Explore the collection →</Link></div>
   );
   return (
     <div className="checkout-layout">
       <form className="checkout-form" onSubmit={(event) => { event.preventDefault(); setStatus("Checkout is ready for payment integration. No order or payment was submitted."); }}>
-        <div className="checkout-progress" aria-label="Checkout progress"><strong>Bag</strong><span>→</span><strong>Information</strong><span>→</span><span>Payment</span></div>
+        <div className="checkout-progress" aria-label="Checkout progress"><strong>Cart</strong><span>→</span><strong>Information</strong><span>→</span><span>Payment</span></div>
         <section className="checkout-section">
           <div className="split"><h2>Contact</h2><span>Secure checkout preview</span></div>
           <label>Email address<input name="email" type="email" autoComplete="email" required /></label>
@@ -391,10 +399,10 @@ export function Checkout() {
       <aside className="checkout-summary">
         <h2>Order summary</h2>
         <div className="checkout-items">{items.map(({ product, size, quantity }) => <article key={`${product.id}-${size}`} className="checkout-item"><div className="checkout-thumb" style={{ backgroundImage: `url("${product.image}")` }}><span>{quantity}</span></div><div><strong>{product.name}</strong><p>{product.color} · {size}</p></div><Price product={product} quantity={quantity} /></article>)}</div>
-        <div className="checkout-total-row"><span>Subtotal</span><strong><BagSubtotal items={items} /></strong></div>
+        <div className="checkout-total-row"><span>Subtotal</span><strong><CartSubtotal items={items} /></strong></div>
         <div className="checkout-total-row"><span>Shipping</span><span>Calculated when ordering opens</span></div>
-        <div className="checkout-total-row checkout-grand-total"><strong>Total</strong><strong><BagSubtotal items={items} /></strong></div>
-        <Link className="text-link" href="/bag">← Return to bag</Link>
+        <div className="checkout-total-row checkout-grand-total"><strong>Total</strong><strong><CartSubtotal items={items} /></strong></div>
+        <Link className="text-link" href="/cart">← Return to cart</Link>
       </aside>
     </div>
   );
