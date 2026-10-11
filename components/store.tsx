@@ -372,7 +372,7 @@ export function Checkout() {
         <nav className="checkout-progress" aria-label="Checkout progress"><Link href="/cart">Cart</Link><span>›</span><strong>Information</strong><span>›</span><span>Shipping</span><span>›</span><span>Payment</span></nav>
         <div className="checkout-preview-banner"><strong>Checkout preview</strong><span>No order will be created and no payment will be collected.</span></div>
         <section className="checkout-section">
-          <div className="split"><h2>Contact</h2><span>Already have an account? <button type="button" className="checkout-inline-action">Log in</button></span></div>
+          <h2>Contact</h2>
           <label><span className="sr-only">Email address</span><input name="email" type="email" autoComplete="email" required placeholder="Email address" /></label>
           <label className="checkout-checkbox"><input name="updates" type="checkbox" /> Email me about new handmade pieces</label>
         </section>
@@ -402,7 +402,6 @@ export function Checkout() {
       </form>
       <aside className="checkout-summary">
         <div className="checkout-items">{items.map(({ product, size, quantity }) => <article key={`${product.id}-${size}`} className="checkout-item"><div className="checkout-thumb" style={{ backgroundImage: `url("${product.image}")` }}><span>{quantity}</span></div><div><strong>{product.name}</strong><p>{product.color} · {size}</p></div><Price product={product} quantity={quantity} /></article>)}</div>
-        <div className="checkout-discount"><label><span className="sr-only">Discount code</span><input placeholder="Discount code or gift card" /></label><button type="button" disabled>Apply</button></div>
         <div className="checkout-total-row"><span>Subtotal</span><strong><CartSubtotal items={items} /></strong></div>
         <div className="checkout-total-row"><span>Shipping</span><span>Calculated when ordering opens</span></div>
         <div className="checkout-total-row checkout-grand-total"><strong>Total</strong><strong><CartSubtotal items={items} /></strong></div>
