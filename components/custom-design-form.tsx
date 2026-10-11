@@ -8,6 +8,15 @@ const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 export function CustomDesignForm() {
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  if (submitted) return (
+    <section className="custom-design-success" role="status" aria-live="polite">
+      <span aria-hidden="true">✓</span>
+      <p className="eyebrow">REQUEST RECEIVED</p>
+      <h2>Thank you!</h2>
+      <p>Your custom design has been received. We will contact you soon.</p>
+    </section>
+  );
   return (
     <form className="contact-form custom-design-form" encType="multipart/form-data" onSubmit={async (event) => {
       event.preventDefault();
@@ -21,7 +30,7 @@ export function CustomDesignForm() {
         const response = await fetch("/api/custom-designs", { method: "POST", body: data });
         const result = await response.json();
         setStatus(result.message || "We couldn’t submit your request.");
-        if (response.ok) form.reset();
+        if (response.ok) { form.reset(); setSubmitted(true); }
       } catch { setStatus("We couldn’t submit your request. Please try again shortly."); }
       finally { setBusy(false); }
     }}>
@@ -45,7 +54,7 @@ export function CustomDesignForm() {
       <textarea id="custom-notes" name="notes" maxLength={2000} rows={4} placeholder="Occasion, preferred colour, or other details" />
       <label htmlFor="custom-image">Design picture</label>
       <input id="custom-image" name="image" type="file" accept="image/jpeg,image/png,image/webp" required />
-      <small>JPG, PNG, or WebP · maximum 2 MB</small>
+      <small>JPG, PNG, or WebP · maximum 3 MB</small>
       <button className="button" type="submit" disabled={busy}>{busy ? "Sending…" : "Send my design →"}</button>
       <p role="status" aria-live="polite">{status}</p>
     </form>

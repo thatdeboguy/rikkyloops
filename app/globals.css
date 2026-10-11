@@ -47,3 +47,4 @@
 /* Keep interactive controls friendly and consistent across current and future pages. */
 .storefront button,.storefront .button,.storefront input,.storefront textarea,.storefront select{border-radius:8px}
 .storefront textarea{border-radius:10px}.custom-design-form{border-radius:12px}
+.custom-design-success{align-self:start;border:1px solid var(--line);border-radius:12px;padding:48px 36px;background:#fff;text-align:center;box-shadow:0 12px 35px #6e24420c}.custom-design-success>span{display:grid;place-items:center;width:62px;height:62px;margin:0 auto 22px;border-radius:50%;background:var(--rose);color:var(--plum);font-size:30px}.custom-design-success .eyebrow{margin-bottom:10px}.custom-design-success h2{font-size:36px;margin-bottom:13px}.custom-design-success>p:last-child{max-width:430px;margin:0 auto}
