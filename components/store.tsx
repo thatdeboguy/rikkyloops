@@ -369,36 +369,40 @@ export function Checkout() {
   return (
     <div className="checkout-layout">
       <form className="checkout-form" onSubmit={(event) => { event.preventDefault(); setStatus("Checkout is ready for payment integration. No order or payment was submitted."); }}>
-        <div className="checkout-progress" aria-label="Checkout progress"><strong>Cart</strong><span>→</span><strong>Information</strong><span>→</span><span>Payment</span></div>
+        <nav className="checkout-progress" aria-label="Checkout progress"><Link href="/cart">Cart</Link><span>›</span><strong>Information</strong><span>›</span><span>Shipping</span><span>›</span><span>Payment</span></nav>
+        <div className="checkout-preview-banner"><strong>Checkout preview</strong><span>No order will be created and no payment will be collected.</span></div>
         <section className="checkout-section">
-          <div className="split"><h2>Contact</h2><span>Secure checkout preview</span></div>
-          <label>Email address<input name="email" type="email" autoComplete="email" required /></label>
+          <div className="split"><h2>Contact</h2><span>Already have an account? <button type="button" className="checkout-inline-action">Log in</button></span></div>
+          <label><span className="sr-only">Email address</span><input name="email" type="email" autoComplete="email" required placeholder="Email address" /></label>
           <label className="checkout-checkbox"><input name="updates" type="checkbox" /> Email me about new handmade pieces</label>
         </section>
         <section className="checkout-section">
-          <h2>Delivery address</h2>
-          <div className="checkout-fields two"><label>First name<input name="firstName" autoComplete="given-name" required /></label><label>Last name<input name="lastName" autoComplete="family-name" required /></label></div>
-          <label>Country or region<select name="country" autoComplete="country" defaultValue="NG"><option value="NG">Nigeria</option><option value="TR">Türkiye</option><option value="US">United States</option><option value="GB">United Kingdom</option></select></label>
-          <label>Address<input name="address" autoComplete="street-address" required /></label>
-          <div className="checkout-fields two"><label>City<input name="city" autoComplete="address-level2" required /></label><label>State / province<input name="state" autoComplete="address-level1" required /></label></div>
-          <div className="checkout-fields two"><label>Postal code<input name="postalCode" autoComplete="postal-code" required /></label><label>Phone<input name="phone" type="tel" autoComplete="tel" required /></label></div>
+          <h2>Delivery</h2>
+          <label><span className="checkout-floating-label">Country/Region</span><select name="country" autoComplete="country" defaultValue="NG"><option value="NG">Nigeria</option><option value="TR">Türkiye</option><option value="US">United States</option><option value="GB">United Kingdom</option></select></label>
+          <div className="checkout-fields two"><label><span className="sr-only">First name</span><input name="firstName" autoComplete="given-name" required placeholder="First name" /></label><label><span className="sr-only">Last name</span><input name="lastName" autoComplete="family-name" required placeholder="Last name" /></label></div>
+          <label><span className="sr-only">Address</span><input name="address" autoComplete="street-address" required placeholder="Address" /></label>
+          <label><span className="sr-only">Apartment, suite, etc.</span><input name="address2" autoComplete="address-line2" placeholder="Apartment, suite, etc. (optional)" /></label>
+          <div className="checkout-fields three"><label><span className="sr-only">City</span><input name="city" autoComplete="address-level2" required placeholder="City" /></label><label><span className="sr-only">State</span><input name="state" autoComplete="address-level1" required placeholder="State" /></label><label><span className="sr-only">Postal code</span><input name="postalCode" autoComplete="postal-code" required placeholder="Postal code" /></label></div>
+          <label><span className="sr-only">Phone</span><input name="phone" type="tel" autoComplete="tel" required placeholder="Phone" /></label>
+          <label className="checkout-checkbox"><input name="saveInformation" type="checkbox" /> Save this information for next time</label>
         </section>
         <section className="checkout-section">
           <h2>Shipping method</h2>
-          <label className="shipping-option"><input type="radio" name="shipping" value="standard" defaultChecked /><span><strong>Standard delivery</strong><small>Delivery timing and price will be confirmed before launch.</small></span><strong>—</strong></label>
+          <label className="shipping-option"><input type="radio" name="shipping" value="standard" defaultChecked /><span><strong>Standard delivery</strong><small>Delivery timing will be confirmed before launch.</small></span><strong>Calculated later</strong></label>
         </section>
         <section className="checkout-section checkout-payment-preview">
           <h2>Payment</h2>
-          <p>Payment options will appear here when a provider is connected.</p>
-          <div className="payment-placeholder"><span>Card</span><span>Digital wallet</span><span>Bank payment</span></div>
+          <p>All transactions are secure and encrypted. Payment options will appear here when a provider is connected.</p>
+          <div className="payment-placeholder"><div className="payment-placeholder-icon" aria-hidden="true">▣</div><strong>Payment setup is coming soon</strong><span>You will be able to choose a payment method here.</span></div>
         </section>
-        <button className="button wide">Preview order submission →</button>
+        <section className="checkout-section"><h2>Billing address</h2><label className="shipping-option"><input type="radio" name="billing" value="same" defaultChecked /><span><strong>Same as delivery address</strong></span></label></section>
+        <button className="button wide checkout-pay-button">Preview order submission</button>
         <p className="checkout-disclaimer">This checkout is a UI preview. It does not create an order, save these details, or charge you.</p>
         {status && <p role="status" className="notice">{status}</p>}
       </form>
       <aside className="checkout-summary">
-        <h2>Order summary</h2>
         <div className="checkout-items">{items.map(({ product, size, quantity }) => <article key={`${product.id}-${size}`} className="checkout-item"><div className="checkout-thumb" style={{ backgroundImage: `url("${product.image}")` }}><span>{quantity}</span></div><div><strong>{product.name}</strong><p>{product.color} · {size}</p></div><Price product={product} quantity={quantity} /></article>)}</div>
+        <div className="checkout-discount"><label><span className="sr-only">Discount code</span><input placeholder="Discount code or gift card" /></label><button type="button" disabled>Apply</button></div>
         <div className="checkout-total-row"><span>Subtotal</span><strong><CartSubtotal items={items} /></strong></div>
         <div className="checkout-total-row"><span>Shipping</span><span>Calculated when ordering opens</span></div>
         <div className="checkout-total-row checkout-grand-total"><strong>Total</strong><strong><CartSubtotal items={items} /></strong></div>

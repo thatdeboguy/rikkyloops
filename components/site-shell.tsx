@@ -13,6 +13,8 @@ export function SiteShell({
   const pathname = usePathname();
   if (pathname === "/admin" || pathname.startsWith("/admin/"))
     return <main id="main">{children}</main>;
+  if (pathname === "/checkout")
+    return <div className="storefront checkout-site"><a href="#main" className="skip-link">Skip to checkout</a><main id="main">{children}</main></div>;
   return (
     <div className="storefront">
       <a href="#main" className="skip-link">
