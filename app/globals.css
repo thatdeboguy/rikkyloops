@@ -44,3 +44,6 @@
 @media(max-width:550px){.checkout-page .checkout-fields.two,.checkout-page .checkout-fields.three{grid-template-columns:1fr}.checkout-page .checkout-progress{overflow-x:auto;white-space:nowrap}.checkout-page .checkout-section>.split{display:block}.checkout-page .checkout-section>.split>span{display:block;margin-top:6px}.checkout-page .shipping-option{grid-template-columns:auto 1fr}.checkout-page .shipping-option>strong:last-child{grid-column:2;text-align:left;color:var(--muted)}}
 .checkout-page,.checkout-page .checkout-summary,.checkout-page .payment-placeholder{background:#fff}
 @media(max-width:850px){.checkout-page .checkout-summary{background:#fff}}
+/* Keep interactive controls friendly and consistent across current and future pages. */
+.storefront button,.storefront .button,.storefront input,.storefront textarea,.storefront select{border-radius:8px}
+.storefront textarea{border-radius:10px}.custom-design-form{border-radius:12px}
