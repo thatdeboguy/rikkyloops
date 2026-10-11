@@ -414,6 +414,15 @@ export function Checkout() {
 export function ContactForm() {
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
+  const [confirmation, setConfirmation] = useState("");
+  if (confirmation) return (
+    <section className="custom-design-success contact-success" role="status" aria-live="polite">
+      <span aria-hidden="true">✓</span>
+      <p className="eyebrow">MESSAGE RECEIVED</p>
+      <h2>Thank you!</h2>
+      <p>{confirmation}</p>
+    </section>
+  );
   return (
     <form
       className="contact-form"
@@ -431,7 +440,7 @@ export function ContactForm() {
           });
           const data = await res.json();
           setStatus(data.message);
-          if (res.ok) form.reset();
+          if (res.ok) { form.reset(); setConfirmation(String(data.message || "Your message has been sent. We will contact you soon.").replace(/^Thank you!\s*/i, "")); }
         } catch {
           setStatus("We couldn’t send your message. Please try again shortly.");
         } finally {

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-const MAX_IMAGE_BYTES = 3 * 1024 * 1024;
+const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
 const IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 export async function POST(request: Request) {
@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   catch { return NextResponse.json({ message: "We couldn’t read this form. Please try again." }, { status: 400 }); }
   const text = (name: string) => { const value = data.get(name); return typeof value === "string" ? value.trim() : ""; };
   const image = data.get("image");
-  if (!(image instanceof File) || !IMAGE_TYPES.has(image.type) || !image.size || image.size > MAX_IMAGE_BYTES) return NextResponse.json({ message: "Choose a JPG, PNG, or WebP image no larger than 3 MB." }, { status: 400 });
+  if (!(image instanceof File) || !IMAGE_TYPES.has(image.type) || !image.size || image.size > MAX_IMAGE_BYTES) return NextResponse.json({ message: "Choose a JPG, PNG, or WebP image no larger than 2 MB." }, { status: 400 });
   const payload = { name: text("name"), email: text("email"), phone: text("phone"), deliveryAddress: text("deliveryAddress"), measurements: text("measurements"), notes: text("notes"), image: { contentType: image.type, data: Buffer.from(await image.arrayBuffer()).toString("base64") } };
   try {
     const response = await fetch(`${process.env.API_BASE_URL.replace(/\/$/, "")}/custom-designs`, { method: "POST", headers: { "Content-Type": "application/json", ...(process.env.API_SERVICE_TOKEN ? { Authorization: `Bearer ${process.env.API_SERVICE_TOKEN}` } : {}) }, body: JSON.stringify(payload), signal: AbortSignal.timeout(30000) });

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 
-const MAX_IMAGE_BYTES = 3 * 1024 * 1024;
+const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 export function CustomDesignForm() {
@@ -24,7 +24,7 @@ export function CustomDesignForm() {
       const data = new FormData(form);
       const image = data.get("image");
       if (!(image instanceof File) || !image.size) { setStatus("Please choose a design image."); return; }
-      if (!IMAGE_TYPES.includes(image.type) || image.size > MAX_IMAGE_BYTES) { setStatus("Choose a JPG, PNG, or WebP image no larger than 3 MB."); return; }
+      if (!IMAGE_TYPES.includes(image.type) || image.size > MAX_IMAGE_BYTES) { setStatus("Choose a JPG, PNG, or WebP image no larger than 2 MB."); return; }
       setBusy(true); setStatus("");
       try {
         const response = await fetch("/api/custom-designs", { method: "POST", body: data });
@@ -54,7 +54,7 @@ export function CustomDesignForm() {
       <textarea id="custom-notes" name="notes" maxLength={2000} rows={4} placeholder="Occasion, preferred colour, or other details" />
       <label htmlFor="custom-image">Design picture</label>
       <input id="custom-image" name="image" type="file" accept="image/jpeg,image/png,image/webp" required />
-      <small>JPG, PNG, or WebP · maximum 3 MB</small>
+      <small>JPG, PNG, or WebP · maximum 2 MB</small>
       <button className="button" type="submit" disabled={busy}>{busy ? "Sending…" : "Send my design →"}</button>
       <p role="status" aria-live="polite">{status}</p>
     </form>
