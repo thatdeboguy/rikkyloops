@@ -42,7 +42,7 @@ export default async function RootLayout({
                 announcement={content.announcement}
                 footer={
                   <footer>
-                    <div className="footer-top">
+                    <div className="footer-top mx-auto max-w-352">
                       <div className="footer-brand">
                         <Link
                           href="/"
@@ -78,7 +78,7 @@ export default async function RootLayout({
                         </Link>
                       </div>
                     </div>
-                    <div className="footer-bottom">
+                    <div className="footer-bottom mx-auto max-w-352">
                       <span>
                         © {new Date().getFullYear()} Rikkyloops. All rights
                         reserved.

@@ -151,7 +151,7 @@ export function AdminFrame({
         </div>
       </aside>
       <div className="admin-main">
-        <header className="admin-header">
+        <header className="admin-header sticky top-0 z-20 bg-white/95 backdrop-blur-md">
           <div className="admin-user">
             <span className="admin-avatar" aria-hidden="true">
               {username.slice(0, 1).toUpperCase()}
@@ -169,7 +169,7 @@ export function AdminFrame({
             Sign out
           </button>
         </header>
-        <div className="admin-body" id="admin-content" tabIndex={-1}>
+        <div className="admin-body space-y-6" id="admin-content" tabIndex={-1}>
           <div className="admin-heading">
             <p className="admin-breadcrumb">
               Store management / {current.label}

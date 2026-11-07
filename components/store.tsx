@@ -144,7 +144,7 @@ export function Header({ announcement }: { announcement?: string }) {
   return (
     <>
       <div className="announcement">{announcement}</div>
-      <header className="header">
+      <header className="header sticky top-0 z-40 bg-white/95 backdrop-blur-md">
         <Link href="/" className="brand" aria-label="Rikkyloops home">
           <BrandLogo priority />
         </Link>
@@ -295,7 +295,7 @@ export function Cart() {
       </div>
     );
   return (
-    <div className="bag-layout">
+    <div className="bag-layout mx-auto max-w-384">
       <div>
         {items.map(({ product, size, quantity }) => (
           <article className="bag-item" key={`${product.id}-${size}`}>
@@ -338,7 +338,7 @@ export function Cart() {
           </article>
         ))}
       </div>
-      <aside className="order-summary">
+      <aside className="order-summary rounded-2xl border border-line shadow-sm">
         <h2>Your cart</h2>
         <div className="split">
           <p>Subtotal</p>
@@ -400,7 +400,7 @@ export function Checkout() {
         <p className="checkout-disclaimer">This checkout is a UI preview. It does not create an order, save these details, or charge you.</p>
         {status && <p role="status" className="notice">{status}</p>}
       </form>
-      <aside className="checkout-summary">
+      <aside className="checkout-summary rounded-2xl">
         <div className="checkout-items">{items.map(({ product, size, quantity }) => <article key={`${product.id}-${size}`} className="checkout-item"><div className="checkout-thumb" style={{ backgroundImage: `url("${product.image}")` }}><span>{quantity}</span></div><div><strong>{product.name}</strong><p>{product.color} · {size}</p></div><Price product={product} quantity={quantity} /></article>)}</div>
         <div className="checkout-total-row"><span>Subtotal</span><strong><CartSubtotal items={items} /></strong></div>
         <div className="checkout-total-row"><span>Shipping</span><span>Calculated when ordering opens</span></div>
@@ -425,7 +425,7 @@ export function ContactForm() {
   );
   return (
     <form
-      className="contact-form"
+      className="contact-form rounded-2xl border border-line bg-white p-6 shadow-sm sm:p-8"
       onSubmit={async (e) => {
         e.preventDefault();
         setBusy(true);

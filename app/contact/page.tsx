@@ -1,3 +1,4 @@
+import { PageHeading } from "@/components/section-heading";
 import Link from "next/link";
 import { ContactForm } from "@/components/store";
 import { getContent } from "@/lib/content";
@@ -7,11 +8,11 @@ export default async function Contact() {
   const email = content.contactEmail || process.env.CONTACT_EMAIL;
   return (
     <>
-      <div className="page-heading">
-        <span className="eyebrow">A CONVERSATION STARTS SOMETHING LOVELY</span>
-        <h1>{content.contactTitle}</h1>
-        <p>{content.contactIntro}</p>
-      </div>
+      <PageHeading
+        eyebrow="A CONVERSATION STARTS SOMETHING LOVELY"
+        title={content.contactTitle}
+        description={content.contactIntro}
+      />
       <section className="contact-layout">
         <div className="contact-intro">
           <h2>
@@ -49,7 +50,7 @@ export default async function Contact() {
         </div>
         <ContactForm />
       </section>
-      <section className="faq">
+      <section className="faq [&_details]:rounded-xl [&_details]:px-4 [&_details]:transition-colors [&_details:hover]:bg-rose">
         <span className="eyebrow" style={{ textAlign: "center" }}>
           GOOD QUESTIONS. THOUGHTFUL ANSWERS.
         </span>

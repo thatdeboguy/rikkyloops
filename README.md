@@ -25,6 +25,12 @@ Website edits are fetched without caching and appear on new page loads after sav
 
 For manual image URLs, use the configured R2 public hostname (or extend `next.config.ts` to trust another image host). The bucket's public URL must be enabled and point to the same bucket used for uploads.
 
+## UI styling
+
+Tailwind CSS v4 styles the storefront and admin panel. Shared brand colours and typography are defined with `@theme inline` in [the global stylesheet](app/globals.css). Reusable classes use `@apply` inside Tailwind's `components` layer, so utilities in JSX can override them without fighting selector specificity. [The admin stylesheet](app/admin/admin.css) uses `@reference` to access the same theme without generating another copy of Tailwind.
+
+Use [PageHeading and SectionHeading](components/section-heading.tsx) for storefront headings and the existing catalog, form, cart, and admin components for repeated interfaces. Keep responsive layouts, focus states, and reduced-motion support when extending them. Only import components that are rendered.
+
 ## Checks
 
 Run `npm run lint` and `npm run build`. Production uses `npm start`.

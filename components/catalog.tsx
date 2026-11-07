@@ -12,7 +12,7 @@ export function ProductCard({
 }) {
   return (
     <article className="group min-w-0">
-      <Link href={`/shop/${product.id}`} className="relative block aspect-3/4 overflow-hidden rounded-2xl bg-[var(--rose)] [&_img]:object-cover [&_img]:transition-transform [&_img]:duration-500 motion-safe:group-hover:[&_img]:scale-105">
+      <Link href={`/shop/${product.id}`} className="relative block aspect-3/4 overflow-hidden rounded-2xl bg-rose [&_img]:object-cover [&_img]:transition-transform [&_img]:duration-500 motion-safe:group-hover:[&_img]:scale-105">
         <Image
           src={product.image || "/images/placeholder.svg"}
           unoptimized={product.image.startsWith("https://")}
@@ -20,9 +20,9 @@ export function ProductCard({
           fill
           sizes="(max-width: 600px) 46vw, (max-width: 900px) 30vw, 25vw"
         />
-        <span className="absolute inset-x-3 bottom-3 rounded-xl bg-white/95 p-3 text-center text-[var(--ink)] shadow-sm transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">Discover this piece</span>
+        <span className="absolute inset-x-3 bottom-3 rounded-xl bg-white/95 p-3 text-center text-ink shadow-sm transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">Discover this piece</span>
       </Link>
-      <div className="mt-4 mb-2 flex flex-wrap justify-between gap-1 text-xs text-[var(--muted)]">
+      <div className="mt-4 mb-2 flex flex-wrap justify-between gap-1 text-xs text-muted">
         {showCategory && <span>{product.category}</span>}
         <span>{product.color}</span>
       </div>
@@ -34,7 +34,7 @@ export function ProductCard({
           <Price product={product} />
         </span>
       </div>
-      <p className="mt-2 text-xs! text-[var(--muted)]">{product.sizes.join(" · ")}</p>
+      <p className="mt-2 text-xs! text-muted">{product.sizes.join(" · ")}</p>
     </article>
   );
 }
@@ -58,7 +58,7 @@ export function CategoryGrid({
           className="group min-w-0"
           key={name}
         >
-          <div className="relative aspect-3/4 overflow-hidden rounded-2xl bg-[var(--rose)] [&_img]:object-cover [&_img]:transition-transform [&_img]:duration-500 motion-safe:group-hover:[&_img]:scale-105">
+          <div className="relative aspect-3/4 overflow-hidden rounded-2xl bg-rose [&_img]:object-cover [&_img]:transition-transform [&_img]:duration-500 motion-safe:group-hover:[&_img]:scale-105">
             <Image
               src={images[i] || "/images/placeholder.svg"}
               alt={`Explore crochet ${name.toLowerCase()}`}

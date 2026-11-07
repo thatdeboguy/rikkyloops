@@ -1,3 +1,4 @@
+import { PageHeading } from "@/components/section-heading";
 import { cookies } from "next/headers";
 import { isCurrency, productPrice } from "@/lib/currency";
 import Link from "next/link";
@@ -37,16 +38,13 @@ export default async function Shop({
     );
   return (
     <>
-      <div className="page-heading">
-        <span className="eyebrow">HANDMADE PIECES. EVERYDAY JOY.</span>
-        <h1>{category || "The collection"}</h1>
-        <p>
-          A little texture, a little colour, a whole lot of heart. Find a piece
-          that feels like you.
-        </p>
-      </div>
-      <section className="shop-content">
-        <div className="filters">
+      <PageHeading
+        eyebrow="HANDMADE PIECES. EVERYDAY JOY."
+        title={category || "The collection"}
+        description="A little texture, a little colour, a whole lot of heart. Find a piece that feels like you."
+      />
+      <section className="shop-content mx-auto max-w-384">
+        <div className="filters rounded-2xl bg-white p-3 shadow-sm">
           <Link className={`chip ${!category ? "active" : ""}`} href="/shop">
             All pieces
           </Link>
@@ -60,7 +58,7 @@ export default async function Shop({
             </Link>
           ))}
         </div>
-        <div className="shop-controls">
+        <div className="shop-controls [&_form]:flex-wrap [&_form]:gap-3 [&_input]:min-w-0">
           <p>
             {products.length} {products.length === 1 ? "piece" : "pieces"}
             {q ? ` matching “${q}”` : " to make your own"}

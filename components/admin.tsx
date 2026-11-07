@@ -170,7 +170,7 @@ export function AdminLogin() {
     }
   }
   return (
-    <div className="admin-login">
+    <div className="admin-login [&_form]:rounded-2xl [&_form]:shadow-sm">
       <Link href="/" className="brand" aria-label="Rikkyloops home">
         <BrandLogo priority />
       </Link>
@@ -235,7 +235,7 @@ function ImageUpload({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   return (
-    <div className="admin-upload">
+    <div className="admin-upload rounded-xl">
       <label>
         {label}
         <input
@@ -273,7 +273,7 @@ function ImageUpload({
         />
       </label>
       {label === "Website logo" && (
-        <div className="admin-logo-preview">
+        <div className="admin-logo-preview rounded-xl">
           <BrandLogo src={value} />
           <p>
             Used in the website header, footer, admin panel and login page. Save
@@ -370,7 +370,7 @@ function ProductEditor({
     }
   }
   return (
-    <section className="admin-panel">
+    <section className="admin-panel rounded-2xl shadow-sm">
       <div className="split">
         <h2>{product ? "Edit your piece" : "A new piece"}</h2>
         <button className="admin-secondary" onClick={onClose} disabled={busy}>
@@ -554,7 +554,7 @@ function ContentEditor() {
   }, [load]);
   if (!content)
     return (
-      <section className="admin-panel">
+      <section className="admin-panel rounded-2xl shadow-sm">
         <p role="status">{error || "Loading your site content…"}</p>
         {error && (
           <button className="button" onClick={load}>
@@ -586,7 +586,7 @@ function ContentEditor() {
         }
       }}
     >
-      <div className="admin-save">
+      <div className="admin-save rounded-2xl shadow-sm">
         <div>
           <strong>Make it your own</strong>
           <p>Changes appear on the storefront after saving.</p>
@@ -602,7 +602,7 @@ function ContentEditor() {
         {status}
       </p>
       {sections.map((section, i) => (
-        <details key={section.title} className="admin-panel" open={i < 2}>
+        <details key={section.title} className="admin-panel rounded-2xl shadow-sm" open={i < 2}>
           <summary>{section.title}</summary>
           <div className="admin-content-fields">
             {section.fields.map(([key, label, type]) =>
@@ -637,11 +637,11 @@ function ContentEditor() {
           </div>
         </details>
       ))}
-      <details className="admin-panel">
+      <details className="admin-panel rounded-2xl shadow-sm">
         <summary>Frequently asked questions</summary>
         <div className="admin-content-fields">
           {content.faqs.map((faq, index) => (
-            <div className="admin-repeat" key={index}>
+            <div className="admin-repeat rounded-xl" key={index}>
               <label>
                 Question
                 <input
@@ -703,7 +703,7 @@ function ContentEditor() {
           </button>
         </div>
       </details>
-      <details className="admin-panel">
+      <details className="admin-panel rounded-2xl shadow-sm">
         <summary>Size chart (centimetres)</summary>
         <div className="admin-content-fields">
           {content.sizeChart.map((row, index) => (
@@ -801,7 +801,7 @@ function LeadsManager({ onBusy }: { onBusy: (busy: boolean) => void }) {
     <>
       <p className="admin-error" role="alert">{error}</p>
       <p className="admin-success" role="status">{notice}</p>
-      <section className="admin-panel">
+      <section className="admin-panel rounded-2xl shadow-sm">
         <div className="admin-toolbar">
           <h2>Custom design leads</h2>
           <span>{filtered.length} {filtered.length === 1 ? "lead" : "leads"}</span>
@@ -831,7 +831,7 @@ function LeadsManager({ onBusy }: { onBusy: (busy: boolean) => void }) {
       </section>
       {editing && (
         <div className="admin-lead-overlay" role="dialog" aria-modal="true" aria-labelledby="lead-editor-title">
-          <form className="admin-lead-modal" onSubmit={async (event) => {
+          <form className="admin-lead-modal rounded-2xl" onSubmit={async (event) => {
             event.preventDefault();
             const form = new FormData(event.currentTarget);
             onBusy(true); setError("");
@@ -955,7 +955,7 @@ export function AdminDashboard({ username }: { username: string }) {
           }}
         />
       ) : (
-        <section className="admin-panel">
+        <section className="admin-panel rounded-2xl shadow-sm">
           <div className="admin-toolbar">
             <h2>Your collection</h2>
             <button

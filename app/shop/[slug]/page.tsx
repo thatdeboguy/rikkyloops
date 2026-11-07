@@ -29,8 +29,8 @@ export default async function ProductPage({
       <div className="breadcrumb">
         <Link href="/shop">Shop</Link> / {p.category} / {p.name}
       </div>
-      <section className="product-detail">
-        <div className="detail-image">
+      <section className="product-detail mx-auto max-w-384">
+        <div className="detail-image overflow-hidden rounded-3xl">
           <Image
             src={p.image || "/images/placeholder.svg"}
             unoptimized={p.image.startsWith("https://")}

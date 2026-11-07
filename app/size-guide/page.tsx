@@ -1,3 +1,4 @@
+import { PageHeading } from "@/components/section-heading";
 import Link from "next/link";
 import { getContent } from "@/lib/content";
 export const metadata = { title: "Size guide" };
@@ -5,12 +6,12 @@ export default async function SizeGuide() {
   const content = await getContent();
   return (
     <>
-      <div className="page-heading">
-        <span className="eyebrow">A FIT THAT FEELS LIKE YOU</span>
-        <h1>{content.sizeTitle}</h1>
-        <p>{content.sizeIntro}</p>
-      </div>
-      <article className="prose">
+      <PageHeading
+        eyebrow="A FIT THAT FEELS LIKE YOU"
+        title={content.sizeTitle}
+        description={content.sizeIntro}
+      />
+      <article className="prose rounded-2xl border border-line bg-white py-8 shadow-sm sm:px-10">
         <div className="table-wrap">
           <table>
             <caption>Body measurements (cm)</caption>

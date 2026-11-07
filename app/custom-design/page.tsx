@@ -1,3 +1,4 @@
+import { PageHeading } from "@/components/section-heading";
 import { CustomDesignForm } from "@/components/custom-design-form";
 
 export const metadata = { title: "Request a custom design" };
@@ -5,11 +6,11 @@ export const metadata = { title: "Request a custom design" };
 export default function CustomDesignPage() {
   return (
     <>
-      <div className="page-heading">
-        <span className="eyebrow">MADE FROM YOUR IMAGINATION</span>
-        <h1>Request a custom Piece.</h1>
-        <p>Send us your inspiration and delivery details. We will review the design and contact you with the timing, and price.</p>
-      </div>
+      <PageHeading
+        eyebrow="MADE FROM YOUR IMAGINATION"
+        title="Request a custom Piece."
+        description="Send us your inspiration and delivery details. We will review the design and contact you with the timing, and price."
+      />
       <section className="custom-design-layout">
         <aside className="custom-design-intro">
           <span className="eyebrow">HOW IT WORKS</span>

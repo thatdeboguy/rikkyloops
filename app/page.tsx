@@ -17,7 +17,7 @@ export default async function Home() {
           <Link href="/shop" className="button rounded-full! px-7! shadow-sm hover:-translate-y-0.5 motion-reduce:transform-none">
             Find your favourite <span>↗</span>
           </Link>
-          <div className="mt-9 flex items-center gap-4 border-t border-[#e5bfd0] pt-6 text-[var(--muted)]">
+          <div className="mt-9 flex items-center gap-4 border-t border-[#e5bfd0] pt-6 text-muted">
             <span className="loop-mark">❋</span>
             <span>
               Made slowly.
