@@ -1,4 +1,3 @@
-import { PageHeading } from "@/components/section-heading";
 import Link from "next/link";
 import { ContactForm } from "@/components/store";
 import { getContent } from "@/lib/content";
@@ -8,11 +7,7 @@ export default async function Contact() {
   const email = content.contactEmail || process.env.CONTACT_EMAIL;
   return (
     <>
-      <PageHeading
-        eyebrow="A CONVERSATION STARTS SOMETHING LOVELY"
-        title={content.contactTitle}
-        description={content.contactIntro}
-      />
+      <h1 className="sr-only">{content.contactTitle}</h1>
       <section className="contact-layout">
         <div className="contact-intro">
           <h2>

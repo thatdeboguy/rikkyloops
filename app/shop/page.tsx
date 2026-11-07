@@ -1,4 +1,3 @@
-import { PageHeading } from "@/components/section-heading";
 import { cookies } from "next/headers";
 import { isCurrency, productPrice } from "@/lib/currency";
 import Link from "next/link";
@@ -38,11 +37,7 @@ export default async function Shop({
     );
   return (
     <>
-      <PageHeading
-        eyebrow="HANDMADE PIECES. EVERYDAY JOY."
-        title={category || "The collection"}
-        description="A little texture, a little colour, a whole lot of heart. Find a piece that feels like you."
-      />
+      <h1 className="sr-only">{category || "The collection"}</h1>
       <section className="shop-content mx-auto max-w-384">
         <div className="filters rounded-2xl bg-white p-3 shadow-sm">
           <Link className={`chip ${!category ? "active" : ""}`} href="/shop">
